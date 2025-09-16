@@ -10,7 +10,7 @@ void test_bubble_sort() {
     for (size_t i = 0; i < arr.size(); i++) {
         assert(arr[i] == expected[i]);
     }
-    cout << "Bubble Sort Test Passed!" << endl;
+    cout << "Test Passed!" << endl;
 }
 
 int main() {

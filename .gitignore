@@ -67,3 +67,4 @@ CMakeLists.txt.user
 !.gitignore
 !.gitattributes
 !.gitmodules
+!README.md
