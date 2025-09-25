@@ -2,4 +2,5 @@
 #include <vector>
 using namespace std;
 
-void insertion_sort(vector<int>& arr);
+template <typename T>
+void insertion_sort(vector<T>& arr);

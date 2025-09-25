@@ -2,4 +2,5 @@
 #include <vector>
 using namespace std;
 
-void optimized_bubble_sort(vector<int>& arr);
+template <typename T>
+void optimized_bubble_sort(vector<T>& arr);

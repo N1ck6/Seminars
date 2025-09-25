@@ -2,4 +2,5 @@
 #include <vector>
 using namespace std;
 
-void exchange_sort(vector<int>& arr);
+template <typename T>
+void exchange_sort(vector<T>& arr);

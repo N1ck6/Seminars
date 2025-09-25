@@ -1,6 +1,7 @@
 #include "exchange_sort.h"
 
-void insertion_sort(vector<int>& arr) {
+template <typename T>
+void insertion_sort(vector<T>& arr) {
     size_t n = arr.size();
     for (size_t i = 1; i < n; ++i) {
         int key = arr[i];
@@ -12,3 +13,6 @@ void insertion_sort(vector<int>& arr) {
         arr[j + 1] = key;
     }
 }
+
+template void insertion_sort<int>(vector<int>& arr);
+template void insertion_sort<double>(vector<double>& arr);

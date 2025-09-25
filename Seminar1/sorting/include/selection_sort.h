@@ -2,4 +2,5 @@
 #include <vector>
 using namespace std;
 
-void selection_sort(vector<int>& arr);
+template <typename T>
+void selection_sort(vector<T>& arr);
