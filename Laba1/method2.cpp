@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-#include <stdbool.h>
+#include <iostream>
 
 void process_cstring(char str[]) {
     int len = strlen(str);
@@ -86,6 +86,7 @@ void process_cstring(char str[]) {
 
 int main() {
     char str[256];
+    setlocale(LC_ALL, "Rus");
 
     printf("¬ведите строку: ");
     fgets(str, 256, stdin);
