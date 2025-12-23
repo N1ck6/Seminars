@@ -5,7 +5,6 @@ void natural_merge_sort(vector<T>& arr) {
     if (arr.size() <= 1) return;
 
     const string files[] = { "temp_input.bin", "temp_B.bin", "temp_C.bin" };
-    const auto cleanup = [&]() {for (const auto& f : files) remove(f.c_str());};
 
     ofstream out(files[0], ios::binary);
     if (!out) throw runtime_error("File write error");
@@ -43,19 +42,23 @@ void natural_merge_sort(vector<T>& arr) {
             ofstream out(files[0], ios::binary);
             if (!inB || !inC || !out) throw runtime_error("Merge error");
 
-            auto read = [](ifstream& f, T& item) {return f.read(reinterpret_cast<char*>(&item), sizeof(T)); };
-
             T itemB, itemC;
-            bool validB = read(inB, itemB), validC = read(inC, itemC);
+            inB.read(reinterpret_cast<char*>(&itemB), sizeof(T));
+            bool validB = static_cast<bool>(inB);
+
+            inC.read(reinterpret_cast<char*>(&itemC), sizeof(T));
+            bool validC = static_cast<bool>(inC);
 
             while (validB || validC) {
                 if (validB && (!validC || itemB <= itemC)) {
                     out.write(reinterpret_cast<const char*>(&itemB), sizeof(T));
-                    validB = read(inB, itemB);
+                    inB.read(reinterpret_cast<char*>(&itemB), sizeof(T));
+                    validB = static_cast<bool>(inB);
                 }
                 else {
                     out.write(reinterpret_cast<const char*>(&itemC), sizeof(T));
-                    validC = read(inC, itemC);
+                    inC.read(reinterpret_cast<char*>(&itemC), sizeof(T));
+                    validC = static_cast<bool>(inC);
                 }
             }
         }
@@ -67,7 +70,9 @@ void natural_merge_sort(vector<T>& arr) {
     T item;
     while (in.read(reinterpret_cast<char*>(&item), sizeof(T))) arr.push_back(item);
 
-    cleanup();
+    for (const auto& f : files) {
+        remove(f.c_str());
+    }
 }
 
 template void natural_merge_sort<int>(vector<int>& arr);

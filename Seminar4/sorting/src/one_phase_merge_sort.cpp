@@ -5,7 +5,6 @@ void one_phase_merge_sort(vector<T>& arr) {
     if (arr.size() <= 1) return;
 
     const string files[] = { "temp_input.bin", "temp_B.bin" };
-    const auto cleanup = [&]() {for (const auto& f : files) remove(f.c_str()); };
 
     ofstream out(files[0], ios::binary);
     if (!out) throw runtime_error("File write error");
@@ -19,27 +18,35 @@ void one_phase_merge_sort(vector<T>& arr) {
         ofstream out(files[!useTemp], ios::binary);
         if (!in || !out) throw runtime_error("File error");
 
-        const auto read = [](ifstream& f, T& item) {return f.read(reinterpret_cast<char*>(&item), sizeof(T)); };
-
         T itemA, itemB;
-        bool validA = read(in, itemA), validB = false;
-        int countA = 1, countB = 0;
+        in.read(reinterpret_cast<char*>(&itemA), sizeof(T));
+        bool validA = static_cast<bool>(in);
+        in.read(reinterpret_cast<char*>(&itemB), sizeof(T));
+        bool validB = static_cast<bool>(in);
+        int countA = 0, countB = 0;
 
         while (validA || validB) {
             while ((countA < runSize && validA) || (countB < runSize && validB)) {
-                if (validB && (!validA || (countB < runSize && itemB < itemA))) {
+                if (!validA || (validB && countB < runSize && itemB < itemA)) {
                     out.write(reinterpret_cast<const char*>(&itemB), sizeof(T));
-                    validB = read(in, itemB);
+                    in.read(reinterpret_cast<char*>(&itemB), sizeof(T));
+                    validB = static_cast<bool>(in);
                     countB++;
                 } else {
                     out.write(reinterpret_cast<const char*>(&itemA), sizeof(T));
-                    if (!read(in, itemA)) validA = false;
+                    in.read(reinterpret_cast<char*>(&itemA), sizeof(T));
+                    validA = static_cast<bool>(in);
                     countA++;
                 }
             }
 
             countA = countB = 0;
-            validB = read(in, itemB);
+            if (validA) {
+                in.read(reinterpret_cast<char*>(&itemB), sizeof(T));
+                validB = static_cast<bool>(in);
+            } else {
+                validB = false;
+            }
         }
         runSize *= 2;
         useTemp = !useTemp;
@@ -50,7 +57,9 @@ void one_phase_merge_sort(vector<T>& arr) {
     T item;
     while (in.read(reinterpret_cast<char*>(&item), sizeof(T))) arr.push_back(item);
 
-    cleanup();
+    for (const auto& f : files) {
+        remove(f.c_str());
+    }
 }
 
 template void one_phase_merge_sort<int>(vector<int>& arr);
